@@ -4,12 +4,14 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+import numpy as np
 
-batch_size = 5000
+batch_size = 1000
 num_classes = 10
-epochs = 3
+epochs = 15
 
 file = pd.read_csv("train.csv").values
+test = pd.read_csv("test.csv").values
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -47,3 +49,13 @@ model.fit(x_train, y_train,
 score = model.evaluate(x_val, y_val, verbose=0)
 
 print('Test loss:', score[0])
+
+x_test = test.reshape(test.shape[0], 28, 28, 1)
+x_test = x_test.astype(float)
+x_test /= 255.0
+
+predictions = model.predict_classes(x_test)
+
+submissions = pd.DataFrame({"ImageId": list(range(1, len(predictions)+1)), "Label": predictions})
+
+submissions.to_csv("Prediction.csv", index=False, header=True)
