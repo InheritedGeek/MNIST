@@ -6,9 +6,9 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import numpy as np
 
-batch_size = 500
+batch_size = 100
 num_classes = 10
-epochs = 20
+epochs = 50
 
 file = pd.read_csv("train.csv").values
 test = pd.read_csv("test.csv").values
@@ -30,12 +30,15 @@ x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.
 
 # Building Model
 model = Sequential()
-model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+model.add(Conv2D(128, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.5))
-model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
 model.add(Flatten())
 model.add(Dense(num_classes, activation='softmax'))
 
@@ -51,7 +54,7 @@ model.fit(x_train, y_train,
 
 score = model.evaluate(x_val, y_val, verbose=0)
 
-print('Test loss:', score[0])
+print('Validation loss:', score[0])
 
 x_test = test.reshape(test.shape[0], 28, 28, 1)
 x_test = x_test.astype(float)
@@ -62,3 +65,5 @@ predictions = model.predict_classes(x_test)
 submissions = pd.DataFrame({"ImageId": list(range(1, len(predictions)+1)), "Label": predictions})
 
 submissions.to_csv("Prediction.csv", index=False, header=True)
+
+print('Output saved to csv file!')
