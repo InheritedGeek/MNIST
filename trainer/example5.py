@@ -5,8 +5,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import numpy as np
-import tensorflow as tf
-from tensorflow.python.lib.io import file_io
+# import tensorflow as tf
+# from tensorflow.python.lib.io import file_io
 import pickle
 from datetime import datetime
 import time
@@ -17,11 +17,8 @@ num_classes = 10
 epochs = 2
 logs_path = './tmp/example-5/' + datetime.now().isoformat()
 
-
-def train_model(train_file='train.csv', job_dir='./tmp/example-5'):
+def train_model(train_file='train.csv', **args):
     # Here put all the main training code in this function
-    # reader = tf.TextLineReader()
-    # file = reader.read("train.csv")
     # file = file_io.FileIO(train_file, mode='r')
 
     file = pd.read_csv("train.csv").values
@@ -51,19 +48,18 @@ def train_model(train_file='train.csv', job_dir='./tmp/example-5'):
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss="categorical_crossentropy",
-                  optimizer="Adadelta",
-                  metrics=['accuracy'])
+              optimizer="Adadelta",
+              metrics=['accuracy'])
 
     model.fit(x_train, y_train,
-              batch_size=batch_size,
-              epochs=epochs,
-              verbose=1,
-              validation_data=(x_val, y_val))
+          batch_size=batch_size,
+          epochs=epochs,
+          verbose=1,
+          validation_data=(x_val, y_val))
 
     score = model.evaluate(x_val, y_val, verbose=0)
 
     print 'Test loss:', score[0]
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
