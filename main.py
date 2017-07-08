@@ -6,9 +6,9 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import numpy as np
 
-batch_size = 1000
+batch_size = 500
 num_classes = 10
-epochs = 15
+epochs = 20
 
 file = pd.read_csv("train.csv").values
 test = pd.read_csv("test.csv").values
@@ -26,10 +26,13 @@ x_train /= 255.0
 y_train = keras.utils.to_categorical(file[:, 0], num_classes)
 
 # Splitting into training & validation data
-x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.10, random_state=42)
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.10)
 
 # Building Model
 model = Sequential()
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.5))
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
