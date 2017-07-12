@@ -3,11 +3,10 @@ from sklearn.model_selection import train_test_split
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
-from keras.models import load_model
 
 batch_size = 256
 num_classes = 10
-epochs = 1
+epochs = 50
 
 file = pd.read_csv("train.csv").values
 test = pd.read_csv("test.csv").values
@@ -28,23 +27,22 @@ y_train = keras.utils.to_categorical(file[:, 0], num_classes)
 x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.10)
 
 # Building Model
-model = load_model('model.h5')
-# model.load_weights('model.h5')
-# model.add(Conv2D(128, kernel_size=(6, 6), activation='relu', input_shape=input_shape))
-# model.add(Conv2D(64, kernel_size=(6, 6), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
-# model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.2))
-# model.add(Flatten())
-# model.add(Dense(128, activation='relu'))
-# model.add(Dropout(0.4))
-# model.add(Dense(num_classes, activation='softmax'))
+model = Sequential()
+model.add(Conv2D(128, kernel_size=(6, 6), activation='relu', input_shape=input_shape))
+model.add(Conv2D(64, kernel_size=(6, 6), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.4))
+model.add(Dense(num_classes, activation='softmax'))
 
-# model.compile(loss="categorical_crossentropy",
-#               optimizer="Adadelta",
-#               metrics=['accuracy'])
+model.compile(loss="categorical_crossentropy",
+              optimizer="Adadelta",
+              metrics=['accuracy'])
 
 model.fit(x_train, y_train,
           batch_size=batch_size,
